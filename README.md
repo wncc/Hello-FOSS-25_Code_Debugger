@@ -1,4 +1,3 @@
-"""
 # LangChain Code Debugger
 
 An intelligent Python code debugger powered by LangChain and OpenAI's GPT models.
@@ -102,4 +101,3 @@ def my_function():
 ## License
 
 MIT
-"""
