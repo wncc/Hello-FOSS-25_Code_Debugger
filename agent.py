@@ -1,26 +1,26 @@
 """
-Defines the LangChain agent setup for code debugging.
+Defines the LangChain agent setup for code debugging using Gemini.
 """
 
 from typing import Optional
 from langchain.agents import AgentExecutor, create_react_agent
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain.tools import Tool
 from tools.executor import PythonExecutorTool
 
 
 def create_agent(
-    model_name: str = "gpt-4",
+    model_name: str = "gemini-pro",
     temperature: float = 0.0,
     verbose: bool = False,
     max_iterations: Optional[int] = 10
 ) -> AgentExecutor:
     """
-    Create a LangChain agent for debugging Python code.
+    Create a LangChain agent for debugging Python code using Gemini.
     
     Args:
-        model_name: OpenAI model to use (default: gpt-4)
+        model_name: Gemini model to use (default: gemini-pro)
         temperature: Model temperature for creativity (default: 0.0)
         verbose: Whether to print detailed execution logs
         max_iterations: Maximum agent iterations (default: 10)
@@ -29,11 +29,11 @@ def create_agent(
         AgentExecutor: Configured agent ready for debugging
     """
     
-    # Initialize the LLM
-    llm = ChatOpenAI(
+    # Initialize the Gemini LLM
+    llm = ChatGoogleGenerativeAI(
         model=model_name,
         temperature=temperature,
-        timeout=30
+        convert_system_message_to_human=True
     )
     
     # Create the Python executor tool
@@ -97,5 +97,4 @@ Thought: {agent_scratchpad}
     )
     
     return agent_executor
-
 

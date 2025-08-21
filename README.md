@@ -1,6 +1,6 @@
-# LangChain Code Debugger
+# LangChain Code Debugger (Gemini-Powered)
 
-An intelligent Python code debugger powered by LangChain and OpenAI's GPT models.
+An intelligent Python code debugger powered by LangChain and Google's Gemini AI model.
 
 ## Features
 
@@ -9,6 +9,7 @@ An intelligent Python code debugger powered by LangChain and OpenAI's GPT models
 - 🔒 Safe code execution in isolated subprocesses
 - 📝 Detailed debugging explanations
 - 🎯 Modular, extensible architecture
+- 🚀 Powered by Google's Gemini AI model
 
 ## Installation
 
@@ -26,8 +27,15 @@ pip install -r requirements.txt
 3. Set up environment variables:
 ```bash
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Edit .env and add your Google Gemini API key
 ```
+
+## Getting a Gemini API Key
+
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with your Google account
+3. Create a new API key
+4. Copy the key to your `.env` file
 
 ## Usage
 
@@ -49,28 +57,28 @@ The debugger will:
 code_debugger/
 │
 ├── main.py              # Entry point
-├── agent.py             # LangChain agent configuration
+├── agent.py             # LangChain agent configuration with Gemini
 ├── tools/
 │   ├── __init__.py
 │   └── executor.py      # Safe Python code executor
 ├── examples/
 │   ├── __init__.py
 │   └── buggy_code.py    # Sample buggy code for testing
-├── requirements.txt     # Project dependencies
-├── .env.example         # Environment variables template
+├── requirements.txt     # Project dependencies (updated for Gemini)
+├── .env         # Environment variables template
 └── README.md           # This file
 ```
 
 ## Customization
 
-### Using Different Models
+### Using Different Gemini Models
 
 Edit the `create_agent()` call in `main.py`:
 ```python
 agent_executor = create_agent(
-    model_name="gpt-3.5-turbo",  # or "gpt-4"
-    temperature=0.2,              # Higher for more creative solutions
-    verbose=True                  # Set to False for less output
+    model_name="gemini-pro",         # Available models: gemini-pro, gemini-pro-vision
+    temperature=0.2,                 # Higher for more creative solutions
+    verbose=True                     # Set to False for less output
 )
 ```
 
@@ -95,7 +103,7 @@ def my_function():
 ## Requirements
 
 - Python 3.8+
-- OpenAI API key
+- Google Gemini API key
 - Dependencies listed in requirements.txt
 
 ## License

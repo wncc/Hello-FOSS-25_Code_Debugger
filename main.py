@@ -23,9 +23,9 @@ def main():
     """Main function to run the code debugger."""
     
     # Verify OpenAI API key is set
-    if not os.getenv("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY environment variable not set")
-        print("Please set it using: export OPENAI_API_KEY='your-key-here'")
+    if not os.getenv("GOOGLE_API_KEY"):
+        print("Error: GOOGLE_API_KEY environment variable not set")
+        print("Please set it using: export GOOGLE_API_KEY='your-key-here'")
         sys.exit(1)
     
     print("🔧 LangChain Code Debugger")
