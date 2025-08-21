@@ -15,19 +15,26 @@ An intelligent Python code debugger powered by LangChain and Google's Gemini AI 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd code_debugger
+git clone https://github.com/AbhishekU05/Hello_FOSS_25_code_debugger.git
+cd Hello_FOSS_25_code_debugger
 ```
 
 2. Install dependencies:
 ```bash
-pip install -r requirements.txt
+source foss_venv/bin/activate
+pip3 install -r requirements.txt
 ```
 
-3. Set up environment variables:
+3. Create a .env file for your environment variables
 ```bash
-cp .env.example .env
-# Edit .env and add your Google Gemini API key
+# Google Gemini API Configuration
+GOOGLE_API_KEY=your-gemini-api-key-here
+
+# Optional: Specify model (default is gemini-pro)
+# GEMINI_MODEL=gemini-pro
+
+# Optional: Set temperature (default is 0.0)
+# TEMPERATURE=0.0
 ```
 
 ## Getting a Gemini API Key
