@@ -11,7 +11,7 @@ from tools.executor import PythonExecutorTool
 
 
 def create_agent(
-    model_name: str = "gemini-pro",
+    model_name: str = "gemini-1.5-flash",
     temperature: float = 0.0,
     verbose: bool = False,
     max_iterations: Optional[int] = 10
@@ -20,7 +20,7 @@ def create_agent(
     Create a LangChain agent for debugging Python code using Gemini.
     
     Args:
-        model_name: Gemini model to use (default: gemini-pro)
+        model_name: Gemini model to use 
         temperature: Model temperature for creativity (default: 0.0)
         verbose: Whether to print detailed execution logs
         max_iterations: Maximum agent iterations (default: 10)
