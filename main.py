@@ -22,7 +22,7 @@ load_dotenv()
 def main():
     """Main function to run the code debugger."""
     
-    # Verify OpenAI API key is set
+    # Verify Google API key is set
     if not os.getenv("GOOGLE_API_KEY"):
         print("Error: GOOGLE_API_KEY environment variable not set")
         print("Please set it using: export GOOGLE_API_KEY='your-key-here'")
@@ -47,9 +47,7 @@ def main():
     prompt = f"""
     I have the following Python code that contains bugs:
     
-    ```python
     {buggy_code}
-    ```
     
     Please:
     1. Identify what's wrong with this code
