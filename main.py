@@ -1,6 +1,7 @@
 import os 
 import dotenv 
-from agent import create_agent
+from agent import create_agent, UsageTracker
+import time
  
 def main():
     """
@@ -17,8 +18,9 @@ def main():
     print("   Type 'exit' to end the session.")
     print("-" * 70)
 
-    agent_executor = create_agent(model_name="gemini-1.5-flash", verbose=True)
-    
+    agent_executor = create_agent(model_name="gemini-2.5-flash-lite", verbose=True)
+    tracker = UsageTracker()
+
     while True:
         try:
             print("\nPlease paste your code now (type 'EOF' on a new line to finish):")
@@ -66,14 +68,32 @@ def main():
 
             print("\n🤖 Agent is analyzing the code...\n")
             
+            start = time.time()
             response = agent_executor.invoke({"input": task})
-            
+            end = time.time()
+            elapsed = end - start
+
             print("\n" + "="*70)
             print("✅ Debugging Complete. Here is the agent's final answer:")
             print("="*70 + "\n")
             print(f"{response.get('output', 'Sorry, I encountered an issue.')}")
             print("\n" + "-"*70)
             
+            input_tokens = len(task.split())
+            output_text = response.get("output", "")
+            output_tokens = len(output_text.split())
+            total_tokens = input_tokens + output_tokens
+
+            req_per_min, tokens_per_min = tracker.record_usage(total_tokens)
+
+            print("\n" + "="*70)
+            print("✅ Debugging Complete. Here is the agent's final answer:")
+            print("="*70 + "\n")
+            print(output_text)
+            print("\n" + "-"*70)
+            print(f"⏱️ Response time: {elapsed:.2f}s | Tokens used: {total_tokens} | Req/min: {req_per_min} | Tokens/min: {tokens_per_min}")
+            
+
         except KeyboardInterrupt:
             print("\n🤖 Session interrupted by user. Goodbye!")
             break
@@ -82,4 +102,4 @@ def main():
             break
 
 if __name__ == "__main__":
-    main(
+    main()
