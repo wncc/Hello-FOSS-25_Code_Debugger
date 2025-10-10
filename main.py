@@ -1,30 +1,41 @@
-import os 
-import dotenv 
-from agent import create_agent, UsageTracker
+import os
+import dotenv
 import time
- 
+import logging
+from agent import create_agent, UsageTracker
+
+# Suppress verbose logging from LangChain
+logging.getLogger("langchain").setLevel(logging.ERROR)
+logging.getLogger("langchain.agents").setLevel(logging.ERROR)
+logging.getLogger("langchain.chains").setLevel(logging.ERROR)
+logging.getLogger("langchain.callbacks").setLevel(logging.ERROR)
+
+
 def main():
     """
-    Main entry point for the Code Debugger.
+    Main entry point for the LangChain Multi-Language Code Debugger.
     """
+    # Load environment variables
     dotenv.load_dotenv()
-    
-    if not os.getenv("GOOGLE_API_KEY"): 
+
+    # Check for required API key
+    if not os.getenv("GOOGLE_API_KEY"):
         print("🚨 Error: GOOGLE_API_KEY is not set in your .env file.")
         return
 
+    # Welcome message
     print("🚀 Welcome to the LangChain Multi-Language Code Debugger 🚀")
-    print("👉 Paste Python, C++, or Java code you want to debug. When you're done, type 'EOF' on a new line.")
-    print("   Type 'exit' to end the session.")
+    print("👉 Paste Python, C++, or Java code you want to debug. Type 'EOF' to finish or 'exit' to end the session.")
     print("-" * 70)
 
-    agent_executor = create_agent(model_name="gemini-2.5-flash-lite", verbose=True)
+    # Initialize agent and usage tracker
+    agent_executor = create_agent(model_name="gemini-2.5-flash-lite", verbose=False)
     tracker = UsageTracker()
 
     while True:
         try:
+            # Read multi-line input
             print("\nPlease paste your code now (type 'EOF' on a new line to finish):")
-            
             lines = []
             while True:
                 line = input()
@@ -34,17 +45,17 @@ def main():
                     lines = ['exit']
                     break
                 lines.append(line)
-            
+
+            # Exit if requested
             if lines and lines[0] == 'exit':
                 print("🤖 Goodbye!")
                 break
 
             code_to_debug = "\n".join(lines)
-
             if not code_to_debug.strip():
-                continue
+                continue  # Skip empty input
 
-            # --- THIS IS THE UPDATED PROMPT ---
+            # Build task prompt for agent
             task = f"""
             Please act as an expert code debugger for multiple programming languages.
             Your task is to analyze and debug the code provided below.
@@ -67,32 +78,29 @@ def main():
             """
 
             print("\n🤖 Agent is analyzing the code...\n")
-            
-            start = time.time()
+            start_time = time.time()
             response = agent_executor.invoke({"input": task})
-            end = time.time()
-            elapsed = end - start
+            elapsed = time.time() - start_time
 
-            print("\n" + "="*70)
-            print("✅ Debugging Complete. Here is the agent's final answer:")
-            print("="*70 + "\n")
-            print(f"{response.get('output', 'Sorry, I encountered an issue.')}")
-            print("\n" + "-"*70)
-            
+            # Extract output
+            output_text = response.get("output", "Sorry, I encountered an issue.")
+
+            # Estimate token usage
             input_tokens = len(task.split())
-            output_text = response.get("output", "")
             output_tokens = len(output_text.split())
             total_tokens = input_tokens + output_tokens
 
+            # Track usage
             req_per_min, tokens_per_min = tracker.record_usage(total_tokens)
 
-            print("\n" + "="*70)
+            # Display results
+            print("\n" + "=" * 70)
             print("✅ Debugging Complete. Here is the agent's final answer:")
-            print("="*70 + "\n")
+            print("=" * 70 + "\n")
             print(output_text)
-            print("\n" + "-"*70)
-            print(f"⏱️ Response time: {elapsed:.2f}s | Tokens used: {total_tokens} | Req/min: {req_per_min} | Tokens/min: {tokens_per_min}")
-            
+            print("\n" + "-" * 70)
+            print(f"⏱️ Response time: {elapsed:.2f}s | Tokens used: {total_tokens} | "
+                  f"Req/min: {req_per_min} | Tokens/min: {tokens_per_min}")
 
         except KeyboardInterrupt:
             print("\n🤖 Session interrupted by user. Goodbye!")
@@ -100,6 +108,7 @@ def main():
         except Exception as e:
             print(f"\n🚨 An unexpected error occurred: {e}")
             break
+
 
 if __name__ == "__main__":
     main()
