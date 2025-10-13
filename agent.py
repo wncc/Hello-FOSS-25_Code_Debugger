@@ -6,8 +6,18 @@ from langchain import hub
 import time
 from collections import deque
 
-# Import all three execution tools
-from tools.executor import execute_python_code, execute_cpp_code, execute_java_code
+# Import all execution tools
+from tools.executor import (
+    execute_python_code,
+    execute_cpp_code,
+    execute_java_code,
+    execute_javascript_code,
+    execute_rust_code,
+    execute_ruby_code,
+    execute_php_code,
+    execute_c_code,
+    execute_csharp_code
+)
 
 def create_agent(model_name: str = "gemini-1.5-flash-latest", temperature: float = 0.0, verbose: bool = True):
     """
@@ -20,7 +30,17 @@ def create_agent(model_name: str = "gemini-1.5-flash-latest", temperature: float
     )
 
     # The agent now has a tool for each language
-    tools = [execute_python_code, execute_cpp_code, execute_java_code]
+    tools = [
+        execute_python_code,
+        execute_cpp_code,
+        execute_java_code,
+        execute_javascript_code,
+        execute_rust_code,
+        execute_ruby_code,
+        execute_php_code,
+        execute_c_code,
+        execute_csharp_code
+    ]
 
     prompt = hub.pull("hwchase17/react")
 

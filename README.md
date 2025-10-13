@@ -2,16 +2,16 @@
 
 ## Project Overview
 
-This is an advanced **AI agent** built on the **LangChain framework** and powered by the **Gemini Large Language Model (LLM)**, designed for seamless integration into the developer's terminal. Its core function is to automate the process of finding and fixing errors across multiple programming languages, specifically **Python, C++, and Java**.
+This is an advanced **AI agent** built on the **LangChain framework** and powered by the **Gemini Large Language Model (LLM)**, designed for seamless integration into the developer's terminal. Its core function is to automate the process of finding and fixing errors across multiple programming languages, specifically **Python, C, C++, Java, JavaScript/Node.js, Rust, Ruby, PHP, and C#**.
 
 ## How It Works
 
 The system operates on a closed-loop "Observe-Reason-Act" agent model:
 
-1.  **Input & Detection:** The user pastes buggy code. The agent first identifies the programming language (Python, C++, or Java).
-2.  **Execution & Error Capture:** It uses a set of specialized **LangChain execution tools** (e.g., `execute_cpp_code`) to run the code in an isolated environment. This action captures the precise **stack trace** or error output.
+1.  **Input & Detection:** The user pastes buggy code. The agent first identifies the programming language (Python, C, C++, Java, JavaScript, Rust, Ruby, PHP, or C#).
+2.  **Execution & Error Capture:** It uses a set of specialized **LangChain execution tools** (e.g., `execute_c_code`, `execute_cpp_code`, `execute_javascript_code`, `execute_rust_code`, `execute_csharp_code`) to run the code in an isolated environment. This action captures the precise **stack trace** or error output.
 3.  **LLM Analysis:** The captured error output and the original code are fed to the **Gemini LLM** (via the API key). Gemini analyzes the error and the code to diagnose the root cause.
-4.  **Fix & Verification:** Gemini generates the **fully corrected code** and an explanation. Crucially, the agent attempts to **verify the fix** by running the corrected code again to confirm successful execution before presenting the final answer to the user.
+4.  **Fix & Verification:** Gemini generates the **fully corrected code** and an explanation. Crucially, the agent attempts to **verify the fix** by running the corrected code with the appropriate tool again to confirm successful execution before presenting the final answer to the user.
 
 ## Motivation: Terminal-First Debugging
 The core motivation is a **terminal-integrated debugger** which can provide **personalized solutions** and explanations to quickly identify code errors, acting as an on-demand tutor for **absolute beginners** (CS101). By automating the debugging loop with an LLM, it minimizes the tiring, time-consuming process for all developers. It can give **personalized results** depending on the prompt, which can significantly reduce time and effort.
@@ -117,6 +117,15 @@ def my_function():
 - Python 3.8+
 - Google Gemini API key
 - Dependencies listed in requirements.txt
+- **Optional (for multi-language support):**
+  - gcc compiler (for C debugging)
+  - g++ compiler (for C++ debugging)
+  - JDK (for Java debugging)
+  - Node.js (for JavaScript debugging)
+  - rustc compiler (for Rust debugging)
+  - Ruby interpreter (for Ruby debugging)
+  - PHP interpreter (for PHP debugging)
+  - .NET SDK / csc compiler (for C# debugging)
 
 ## License
 

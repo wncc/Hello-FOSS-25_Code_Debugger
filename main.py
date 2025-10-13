@@ -14,8 +14,8 @@ def main():
         return
 
     print("🚀 Welcome to the LangChain Multi-Language Code Debugger 🚀")
-    print("👉 Paste Python, C++, or Java code you want to debug. When you're done, type 'EOF' on a new line.")
-    print("   Type 'exit' to end the session.")
+    print("👉 Paste Python, C, C++, Java, JavaScript, Rust, Ruby, PHP, or C# code you want to debug.")
+    print("   When you're done, type 'EOF' on a new line. Type 'exit' to end the session.")
     print("-" * 70)
 
     agent_executor = create_agent(model_name="gemini-2.5-flash-lite", verbose=True)
@@ -55,11 +55,21 @@ def main():
             
 
             Follow these steps:
-            1.  First, *identify the programming language* of the code (Python, C++, or Java).
-            2.  Based on the language, select the appropriate tool (execute_python_code, execute_cpp_code, or execute_java_code) to run the code and confirm the error.
-            3.  Analyze the error and explain the root cause.
-            4.  Provide the fully corrected code.
-            5.  Verify your fix by running the corrected code with the appropriate tool.
+            1.  First, *identify the programming language* of the code (Python, C, C++, Java, JavaScript, Rust, Ruby, PHP, or C#).
+            2.  Based on the language, select the appropriate tool:
+                - execute_python_code for Python
+                - execute_c_code for C
+                - execute_cpp_code for C++
+                - execute_java_code for Java
+                - execute_javascript_code for JavaScript/Node.js
+                - execute_rust_code for Rust
+                - execute_ruby_code for Ruby
+                - execute_php_code for PHP
+                - execute_csharp_code for C#
+            3.  Run the code with the selected tool to confirm the error.
+            4.  Analyze the error and explain the root cause.
+            5.  Provide the fully corrected code.
+            6.  Verify your fix by running the corrected code with the appropriate tool.
 
             **IMPORTANT RULE**
             When you use an execution tool, the 'Action Input' must be ONLY the raw source code.
