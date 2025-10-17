@@ -31,7 +31,7 @@ def create_agent(model_name: str = "gemini-1.5-flash-latest", temperature: float
         tools=tools,
         verbose=verbose, 
         handle_parsing_errors=True,
-        max_iterations=10
+        max_iterations=50
     )
     return agent_executor 
 
@@ -91,8 +91,15 @@ class UsageTracker:
         if self.daily_requests > self.req_limit_per_day:
             raise RuntimeError("🚫 Daily API request limit exceeded!")
 
-        if tokens_per_min > self.token_limit_per_min:
-            raise RuntimeError("🚫 Token usage limit exceeded!")
+        if tokens_per_min > self.token_limit_per_min*0.9:
+            a=input('You are at 90% tokens/minute limit. Do you want to continue?(y/n))')
+            while True:
+                if a.lower()=='n':
+                    break
+                    raise RuntimeError("🚫 Token usage limit exceeded!")
+                else:
+                    if a.lower()!='y':
+                        print('Invalid input. Please try again.')
 
         return req_per_min, tokens_per_min
         
