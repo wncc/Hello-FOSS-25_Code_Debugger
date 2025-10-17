@@ -31,7 +31,7 @@ def create_agent(model_name: str = "gemini-1.5-flash-latest", temperature: float
         tools=tools,
         verbose=verbose, 
         handle_parsing_errors=True,
-        max_iterations=50
+        max_iterations=10
     )
     return agent_executor 
 
