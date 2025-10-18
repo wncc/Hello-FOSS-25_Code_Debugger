@@ -17,8 +17,21 @@ def main():
     print("👉 Paste Python, C++, or Java code you want to debug. When you're done, type 'EOF' on a new line.")
     print("   Type 'exit' to end the session.")
     print("-" * 70)
-
-    agent_executor = create_agent(model_name="gemini-2.5-flash-lite", verbose=True)
+    while True:
+        a=input('''Do you want concise mode or descriptive mode?
+1. Concise mode gives quick answers. Type 1 for concise mode.
+2. Descriptive mode gives detailed explanations. Type 2 for descriptive mode.
+''')
+        if a=='1':
+            v=False
+            break
+        elif a=='2':
+            v=True
+            break
+        else:
+            print('Invalid input. Please try again.')
+    
+    agent_executor = create_agent(model_name="gemini-2.5-flash-lite", verbose=v)
     tracker = UsageTracker()
 
     while True:
@@ -86,12 +99,6 @@ def main():
 
             req_per_min, tokens_per_min = tracker.record_usage(total_tokens)
 
-            print("\n" + "="*70)
-            print("✅ Debugging Complete. Here is the agent's final answer:")
-            print("="*70 + "\n")
-            print(output_text)
-            print("\n" + "-"*70)
-            print(f"⏱️ Response time: {elapsed:.2f}s | Tokens used: {total_tokens} | Req/min: {req_per_min} | Tokens/min: {tokens_per_min}")
             
 
         except KeyboardInterrupt:
