@@ -1,4 +1,3 @@
-
 import subprocess
 import sys
 import os
@@ -7,16 +6,15 @@ import re
 from langchain.tools import tool
 
 TIMEOUT = 15  # Increased timeout for compiled languages
-MAX_OUTPUT_LENGTH = 5000
+MAX_OUTPUT_LENGTH = 5000  # Prevent overly long outputs
 
-# --- Existing Python Tool (No changes needed) ---
+# --- Existing Python Tool ---
 @tool
 def execute_python_code(code: str) -> str:
     """
     Executes a string of Python code in an isolated subprocess and returns the output.
     This tool is sandboxed and has a timeout.
     """
-    # ... (Your existing execute_python_code function remains here)
     process = None
     try:
         process = subprocess.Popen(
@@ -29,11 +27,12 @@ def execute_python_code(code: str) -> str:
         )
         stdout, stderr = process.communicate(input="", timeout=TIMEOUT)
         
-        # ... (Rest of the function is the same as you have it)
+        # --- Added truncation here ---
         if len(stdout) > MAX_OUTPUT_LENGTH:
             stdout = stdout[:MAX_OUTPUT_LENGTH] + "\n... (stdout truncated)"
         if len(stderr) > MAX_OUTPUT_LENGTH:
             stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
+        # -----------------------------
 
         output = []
         if stdout:
@@ -64,7 +63,8 @@ def execute_python_code(code: str) -> str:
     except Exception as e:
         return f"An unexpected error occurred: {str(e)}"
 
-# --- NEW: C++ Execution Tool ---
+
+# --- C++ Execution Tool ---
 @tool
 def execute_cpp_code(code: str) -> str:
     """
@@ -75,7 +75,6 @@ def execute_cpp_code(code: str) -> str:
         src_file.write(code)
         src_path = src_file.name
     
-    # On Windows, the executable needs a .exe suffix
     exe_suffix = ".exe" if sys.platform == "win32" else ""
     exe_path = src_path.replace(".cpp", exe_suffix)
 
@@ -86,7 +85,12 @@ def execute_cpp_code(code: str) -> str:
             capture_output=True, text=True, timeout=TIMEOUT
         )
         if compile_process.returncode != 0:
-            return f"--- COMPILATION FAILED ---\n{compile_process.stderr}"
+            # --- Added truncation here ---
+            stderr = compile_process.stderr
+            if len(stderr) > MAX_OUTPUT_LENGTH:
+                stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
+            # -----------------------------
+            return f"--- COMPILATION FAILED ---\n{stderr}"
 
         # 2. Execute the compiled program
         run_process = subprocess.run(
@@ -94,11 +98,20 @@ def execute_cpp_code(code: str) -> str:
             capture_output=True, text=True, timeout=TIMEOUT
         )
         
+        # --- Added truncation here ---
+        stdout = run_process.stdout
+        stderr = run_process.stderr
+        if len(stdout) > MAX_OUTPUT_LENGTH:
+            stdout = stdout[:MAX_OUTPUT_LENGTH] + "\n... (stdout truncated)"
+        if len(stderr) > MAX_OUTPUT_LENGTH:
+            stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
+        # -----------------------------
+
         output = []
-        if run_process.stdout:
-            output.append(f"--- STDOUT ---\n{run_process.stdout}")
-        if run_process.stderr:
-            output.append(f"--- STDERR ---\n{run_process.stderr}")
+        if stdout:
+            output.append(f"--- STDOUT ---\n{stdout}")
+        if stderr:
+            output.append(f"--- STDERR ---\n{stderr}")
 
         return_code = run_process.returncode
         if return_code != 0:
@@ -122,7 +135,8 @@ def execute_cpp_code(code: str) -> str:
         if os.path.exists(exe_path):
             os.remove(exe_path)
 
-# --- NEW: Java Execution Tool ---
+
+# --- Java Execution Tool ---
 @tool
 def execute_java_code(code: str) -> str:
     """
@@ -130,7 +144,6 @@ def execute_java_code(code: str) -> str:
     Requires javac and java to be installed and in the system's PATH.
     The code must contain a public class with a main method.
     """
-    # Find the public class name to name the file correctly
     match = re.search(r'public\s+class\s+(\w+)', code)
     if not match:
         return "Error: No public class found in the Java code. A public class is required."
@@ -148,7 +161,12 @@ def execute_java_code(code: str) -> str:
             capture_output=True, text=True, timeout=TIMEOUT
         )
         if compile_process.returncode != 0:
-            return f"--- COMPILATION FAILED ---\n{compile_process.stderr}"
+            # --- Added truncation here ---
+            stderr = compile_process.stderr
+            if len(stderr) > MAX_OUTPUT_LENGTH:
+                stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
+            # -----------------------------
+            return f"--- COMPILATION FAILED ---\n{stderr}"
 
         # 2. Execute the compiled program
         run_process = subprocess.run(
@@ -156,11 +174,20 @@ def execute_java_code(code: str) -> str:
             capture_output=True, text=True, timeout=TIMEOUT
         )
         
+        # --- Added truncation here ---
+        stdout = run_process.stdout
+        stderr = run_process.stderr
+        if len(stdout) > MAX_OUTPUT_LENGTH:
+            stdout = stdout[:MAX_OUTPUT_LENGTH] + "\n... (stdout truncated)"
+        if len(stderr) > MAX_OUTPUT_LENGTH:
+            stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
+        # -----------------------------
+
         output = []
-        if run_process.stdout:
-            output.append(f"--- STDOUT ---\n{run_process.stdout}")
-        if run_process.stderr:
-            output.append(f"--- STDERR ---\n{run_process.stderr}")
+        if stdout:
+            output.append(f"--- STDOUT ---\n{stdout}")
+        if stderr:
+            output.append(f"--- STDERR ---\n{stderr}")
 
         return_code = run_process.returncode
         if return_code != 0:
