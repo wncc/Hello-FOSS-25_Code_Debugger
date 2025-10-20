@@ -544,7 +544,8 @@ def execute_csharp_code(code: str) -> str:
                 stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
             output.append(f"--- STDERR ---\n{stderr}")
         
-        output.append(f"--- EXIT CODE ---\n{run_process.returncode}")
+        if run_process.returncode != 0:
+            output.append(f"--- EXIT CODE ---\n{run_process.returncode}")
         
         if not output:
             return "Code executed successfully with no output."
