@@ -100,6 +100,6 @@ Write-Host "   dotnet --version" -ForegroundColor Cyan
 Write-Host "   rustc --version" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "4. Test the debugger:" -ForegroundColor White
-Write-Host "   cd C:\Users\sayan\Hello-FOSS-25_Code_Debugger" -ForegroundColor Cyan
+Write-Host "   cd <your-project-directory>" -ForegroundColor Cyan
 Write-Host "   python test_complex_new_languages_success.py" -ForegroundColor Cyan
 Write-Host ""
