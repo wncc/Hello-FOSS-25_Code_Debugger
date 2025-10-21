@@ -211,3 +211,61 @@ def execute_java_code(code: str) -> str:
         class_file = f"{class_name}.class"
         if os.path.exists(class_file):
             os.remove(class_file)
+
+        # --- Javascript Execution Tool ---    
+@tool
+def execute_javascript_code(code: str) -> str:
+    """
+    Executes a string of JavaScript code using Node.js in an isolated subprocess.
+    Requires node to be installed and in the system's PATH.
+    """
+    TIMEOUT = 15
+    MAX_OUTPUT_LENGTH = 5000
+    
+    import tempfile
+    import subprocess
+    import sys
+    import os
+
+    with tempfile.NamedTemporaryFile(suffix=".js", delete=False, mode='w') as src_file:
+        src_file.write(code)
+        src_path = src_file.name
+
+    try:
+        run_process = subprocess.run(
+            ["node", src_path],
+            capture_output=True, text=True, timeout=TIMEOUT
+        )
+        
+        stdout = run_process.stdout
+        stderr = run_process.stderr
+        
+        if len(stdout) > MAX_OUTPUT_LENGTH:
+            stdout = stdout[:MAX_OUTPUT_LENGTH] + "\n... (stdout truncated)"
+        if len(stderr) > MAX_OUTPUT_LENGTH:
+            stderr = stderr[:MAX_OUTPUT_LENGTH] + "\n... (stderr truncated)"
+        
+        output = []
+        if stdout:
+            output.append(f"--- STDOUT ---\n{stdout}")
+        if stderr:
+            output.append(f"--- STDERR ---\n{stderr}")
+
+        return_code = run_process.returncode
+        if return_code != 0:
+            output.append(f"--- EXIT CODE: {return_code} ---")
+        
+        if not output:
+            return "Code executed successfully with no output."
+
+        return "\n".join(output)
+
+    except subprocess.TimeoutExpired:
+        return f"Error: JavaScript execution timed out after {TIMEOUT} seconds."
+    except FileNotFoundError:
+        return "Error: node command not found. Please ensure Node.js is installed and in your PATH."
+    except Exception as e:
+        return f"An unexpected error occurred: {str(e)}"
+    finally:
+        if os.path.exists(src_path):
+            os.remove(src_path)
